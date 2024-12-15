@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+    struct Node* prev;
+};
+
+struct Node* createList() {
+    return NULL;  // Initially, the list is empty
+}
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = newNode->prev = NULL;
+    return newNode;
+}
+
+struct Node* insertAtBeginning(struct Node* head, int data) {
+    struct Node* newNode = createNode(data);
+    if (head == NULL) {
+        return newNode; 
+    }
+    newNode->next = head;
+    head->prev = newNode;
+    return newNode; 
+}
+
+
+struct Node* insertAtPosition(struct Node* head, int data, int position) {
+    struct Node* newNode = createNode(data);
+    if (position == 0) {
+        return insertAtBeginning(head, data); 
+    }
+    
+    struct Node* temp = head;
+    int count = 0;
+    
+    while (temp != NULL && count < position - 1) {
+        temp = temp->next;
+        count++;
+    }
+    
+    if (temp == NULL) {
+        printf("Position is out of range.\n");
+        return head;
+    }
+    
+    newNode->next = temp->next;
+    if (temp->next != NULL) {
+        temp->next->prev = newNode;
+    }
+    temp->next = newNode;
+    newNode->prev = temp;
+    
+    return head;
+}
+
+struct Node* insertAtEnd(struct Node* head, int data) {
+    struct Node* newNode = createNode(data);
+    if (head == NULL) {
+        return newNode; 
+    }
+    
+    struct Node* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    
+    temp->next = newNode;
+    newNode->prev = temp;
+    return head;
+}
+
+void displayList(struct Node* head) {
+    struct Node* temp = head;
+    if (temp == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct Node* head = createList();
+    
+    // Insert nodes at the beginning, specific position, and end
+    head = insertAtBeginning(head, 10); 
+    head = insertAtEnd(head, 20);       
+    head = insertAtBeginning(head, 5); 
+    head = insertAtPosition(head, 15, 2); 
+    
+    printf("Doubly Linked List: ");
+    displayList(head);
+    
+    return 0;
+}
