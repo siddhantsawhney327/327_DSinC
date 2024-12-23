@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define MAX 10
+
+// Define a structure for the graph
+struct Graph {
+    int adjMatrix[MAX][MAX];
+    int numVertices;
+};
+
+// Function to initialize the graph
+void initGraph(struct Graph* g, int numVertices) {
+    g->numVertices = numVertices;
+    for (int i = 0; i < numVertices; i++) {
+        for (int j = 0; j < numVertices; j++) {
+            g->adjMatrix[i][j] = 0; // Initialize all edges as 0 (no edge)
+        }
+    }
+}
+
+// Function to add an edge to the graph
+void addEdge(struct Graph* g, int start, int end) {
+    g->adjMatrix[start][end] = 1;
+    g->adjMatrix[end][start] = 1; // Since it's an undirected graph
+}
+
+// Function to implement BFS
+void BFS(struct Graph* g, int startVertex) {
+    bool visited[MAX] = {false}; // Array to track visited vertices
+    int queue[MAX];
+    int front = 0, rear = 0;
+
+    // Mark the start vertex as visited and enqueue it
+    visited[startVertex] = true;
+    queue[rear++] = startVertex;
+
+    printf("BFS Traversal: ");
+    
+    while (front < rear) {
+        int currentVertex = queue[front++]; // Dequeue a vertex
+        printf("%d ", currentVertex);
+
+        // Enqueue all unvisited adjacent vertices
+        for (int i = 0; i < g->numVertices; i++) {
+            if (g->adjMatrix[currentVertex][i] == 1 && !visited[i]) {
+                visited[i] = true;
+                queue[rear++] = i;
+            }
+        }
+    }
+    printf("\n");
+}
+
+int main() {
+    struct Graph g;
+    initGraph(&g, 6);  // Graph with 6 vertices
+
+    // Add edges
+    addEdge(&g, 0, 1);
+    addEdge(&g, 0, 2);
+    addEdge(&g, 1, 3);
+    addEdge(&g, 1, 4);
+    addEdge(&g, 2, 5);
+
+    BFS(&g, 0);  // Start BFS from vertex 0
+
+    return 0;
+}
